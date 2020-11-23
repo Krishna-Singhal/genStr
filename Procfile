@@ -1,1 +1,1 @@
-worker: python3 genStr.py
+worker: bash run
