@@ -74,7 +74,11 @@ async def genStr(_, msg: Message):
         await msg.reply("`Code is Expired.`\nPress /start for create again.")
         return
     except SessionPasswordNeeded:
-        new_code = wait bot.ask(chat.id, "`This account have two-step verification code.\nPlease enter your second factor authentication code.`")
+        new_code = (await bot.ask(
+                        chat.id, 
+                        "`This account have two-step verification code.\nPlease enter your second factor authentication code.`"
+                    )
+        ).text
         try:
             await client.check_password(new_code)
         except Exception as e:
