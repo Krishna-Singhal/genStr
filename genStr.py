@@ -3,6 +3,7 @@ import asyncio
 
 from pyrogram import filters, Client
 from pyrogram.types import Message
+from pyrogram.errors import BadRequest, SessionPasswordNeeded
 
 API_ID = int(os.environ.get("API_ID"))
 API_HASH = os.environ.get("API_HASH")
