@@ -101,3 +101,6 @@ async def genStr(msg: Message):
     except Exception as e:
         await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`")
         return
+
+if __name__ == "__main__":
+    bot.run()
