@@ -8,6 +8,7 @@ from pyrogram.errors import (
     PhoneNumberInvalid, ApiIdInvalid,
     PhoneCodeInvalid, PhoneCodeExpired
 )
+from pyromod import listen
 
 API_ID = int(os.environ.get("API_ID"))
 API_HASH = os.environ.get("API_HASH")
@@ -28,21 +29,17 @@ PHONE_NUMBER = "`Now send your Phone number to Continue.`"
 @bot.on_message(filters.private & filters.command("start"))
 async def genStr(_, msg: Message):
     chat = msg.chat
-    await msg.reply(API.format(msg.from_user.mention))
-    api_id = (await bot.get_history(chat.id, limit=1, reverse=False))[0].text
+    api_id = (await bot.ask(chat.id, API.format(msg.from_user.mention))).text
     try:
         api_id = int(api_id)
-        await msg.reply(HASH)
     except Exception:
         await msg.reply("`API ID Invalid.`")
         return
-    api_hash = (await bot.get_history(chat.id, limit=1, reverse=False))[0].text
-    if len(api_hash) >= 30:
-        await msg.reply(PHONE_NUMBER)
-    else:
+    api_hash = (await bot.ask(chat.id, HASH)).text
+    if not len(api_hash) >= 30:
         await msg.reply("`API HASH Invalid.`")
         return
-    phone = (await bot.get_history(chat.id, limit=1, reverse=False))[0].text
+    phone = (await bot.ask(chat.id, PHONE_NUMBER)).text
     if not phone.startswith("+"):
         await msg.reply("`Phone number Invalid.`\nUse Country Code Before your Phone Number.")
         return
@@ -58,7 +55,6 @@ async def genStr(_, msg: Message):
         await client.connect()
     try:
         code = await client.send_code(phone)
-        await msg.reply("`An otp is sent to your phone number, Please enter to Continue.`")
     except FloodWait as e:
         await msg.reply(f"`you have floodwait of {e.x} Seconds`")
         return
@@ -68,7 +64,7 @@ async def genStr(_, msg: Message):
     except PhoneNumberInvalid:
         await msg.reply("`your Phone Number is Invalid.`")
         return
-    otp = (await bot.get_history(chat.id, limit=1, reverse=False))[0].text
+    otp = (await bot.get_history(chat.id, ""`An otp is sent to your phone number, Please enter to Continue.`")).text
     try:
         await client.sign_in(phone, code.phone_code_hash, code=otp)
     except PhoneCodeInvalid:
@@ -78,8 +74,7 @@ async def genStr(_, msg: Message):
         await msg.reply("`Code is Expired.`\nPress /start for create again.")
         return
     except SessionPasswordNeeded:
-        await bot.send_message(chat.id, "`This account have two-step verification code.\nPlease enter your second factor authentication code.`")
-        new_code = (await bot.get_history(chat.id, limit=1, reverse=False))[0].text
+        new_code = wait bot.ask(chat.id, "`This account have two-step verification code.\nPlease enter your second factor authentication code.`")
         try:
             await client.check_password(new_code)
         except Exception as e:
