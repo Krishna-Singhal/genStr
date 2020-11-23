@@ -66,7 +66,7 @@ async def genStr(_, msg: Message):
         return
     otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter to Continue.`")).text
     try:
-        await client.sign_in(phone, code.phone_code_hash, code=otp)
+        await client.sign_in(phone, code.phone_code_hash, phone_code=otp)
     except PhoneCodeInvalid:
         await msg.reply("`Invalid Code.`\nPress /start for create again.")
         return
