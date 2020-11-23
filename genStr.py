@@ -64,7 +64,7 @@ async def genStr(_, msg: Message):
     except PhoneNumberInvalid:
         await msg.reply("`your Phone Number is Invalid.`")
         return
-    otp = (await bot.get_history(chat.id, "`An otp is sent to your phone number, Please enter to Continue.`")).text
+    otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter to Continue.`")).text
     try:
         await client.sign_in(phone, code.phone_code_hash, code=otp)
     except PhoneCodeInvalid:
