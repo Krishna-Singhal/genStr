@@ -26,7 +26,7 @@ HASH = "`Send your API_HASH to Continue.`"
 PHONE_NUMBER = "`Now send your Phone number to Continue.`"
 
 @bot.on_message(filters.private & filters.command("start"))
-async def genStr(msg: Message):
+async def genStr(_, msg: Message):
     chat = msg.chat
     await msg.reply(API.format(msg.from_user.mention))
     api_id = (await bot.get_history(chat.id, limit=1, reverse=False))[0].text
