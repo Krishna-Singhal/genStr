@@ -44,11 +44,17 @@ async def genStr(_, msg: Message):
     if not len(api_hash) >= 30:
         await msg.reply("`API HASH Invalid.`\nPress /start to create again.")
         return
-    phone = (await bot.ask(chat.id, PHONE_NUMBER)).text
-    if await is_cancel(msg, phone):
-        return
-    while not phone.startswith("+"):
-        phone = (await bot.ask(chat.id, "`Phone number Invalid.`\nUse Country Code Before your Phone Number.\nPress /cancel to Cancel.")).text
+    while True:
+        phone = (await bot.ask(chat.id, PHONE_NUMBER)).text
+        if not phone:
+            continue
+        if await is_cancel(msg, phone):
+            return
+        confirm = (await bot.ask(chat.id, f'Is "{phone}" correct? (y/n): ')).text.lower()
+        if await is_cancel(msg, confirm):
+            return
+        if confirm == "y":
+            break
     try:
         client = Client("my_account", api_id=api_id, api_hash=api_hash)
     except Exception as e:
@@ -71,14 +77,14 @@ async def genStr(_, msg: Message):
         await msg.reply("`your Phone Number is Invalid.`\nPress /start to create again.")
         return
     try:
-        otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter to Continue.`\nPress /cancel to Cancel.", timeout=300)).text
+        otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter otp in `1-2-3-4-5` format.`\nPress /cancel to Cancel.", timeout=300)).text
     except TimeoutError:
         await msg.reply("`Time limit reached of 5 min.\nPress /start to create again.`")
         return
     if await is_cancel(msg, otp):
         return
     try:
-        await client.sign_in(phone, code.phone_code_hash, phone_code='-'.join(otp))
+        await client.sign_in(phone, code.phone_code_hash, phone_code=otp)
     except PhoneCodeInvalid:
         await msg.reply("`Invalid Code.`\nPress /start to create again.")
         return
@@ -108,14 +114,16 @@ async def genStr(_, msg: Message):
         return
     try:
         session_string = await client.export_session_string()
-        await client.send_message("me", f"#USERGE #HU_STRING_SESSION\n\n```{session_string}```")
-        await bot.send_message(
-            chat.id, 
-            text="`String Session is Successfully Generated.\nClick on Button Below.`",
-            reply_markup=InlineKeyboardMarkup(
+        await client.send_message("me", f"#PYROGRAM #HU_STRING_SESSION\n\n```{session_string}```")
+        if msg.from_user.username:
+            text = `String Session is Successfully Generated.\nClick on Button Below.`"
+            reply_markup = InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text="Click Me", url=f"tg://user?id={chat.id}")]]
             )
-        )
+        else:
+            text = "`String Session is Successfully Generated.\nGo to your Saves Messages.`"
+            reply_markup = None
+        await msg.reply(text, reply_marup=reply_markup)
     except Exception as e:
         await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`")
         return
