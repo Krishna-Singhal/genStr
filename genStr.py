@@ -113,7 +113,7 @@ async def genStr(_, msg: Message):
 
 
 def cancelled(msg: Message, text: str):
-    if text.startwith("/cancel")
+    if text.startwith("/cancel"):
         await msg.reply("`Process Cancelled.`")
         return
 
