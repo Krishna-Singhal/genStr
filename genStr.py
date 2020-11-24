@@ -24,8 +24,8 @@ API = """Hi {}
 Welcome to Pyrogram's `HU_STRING_SESSION` generator Bot.
 
 `Send your API_ID to Continue.`"""
-HASH = "`Send your API_HASH to Continue.`\nPress /cancel to Cancel."
-PHONE_NUMBER = "`Now send your Phone number to Continue include Country code. eg. +13124562345`\nPress /cancel to Cancel."
+HASH = "`Send your API_HASH to Continue.`\n\nPress /cancel to Cancel."
+PHONE_NUMBER = "`Now send your Phone number to Continue include Country code. eg. +13124562345`\n\nPress /cancel to Cancel."
 
 @bot.on_message(filters.private & filters.command("start"))
 async def genStr(_, msg: Message):
@@ -71,13 +71,13 @@ async def genStr(_, msg: Message):
         await msg.reply(f"`you have floodwait of {e.x} Seconds`")
         return
     except ApiIdInvalid:
-        await msg.reply("`Api Id and Api Hash are Invalid.`\nPress /start to create again.")
+        await msg.reply("`Api Id and Api Hash are Invalid.`\n\nPress /start to create again.")
         return
     except PhoneNumberInvalid:
-        await msg.reply("`your Phone Number is Invalid.`\nPress /start to create again.")
+        await msg.reply("`your Phone Number is Invalid.`\n\nPress /start to create again.")
         return
     try:
-        otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter otp in `1-2-3-4-5` format.`\nPress /cancel to Cancel.", timeout=300)).text
+        otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter otp in `1 2 3 4 5` format.`\n\nPress /cancel to Cancel.", timeout=300)).text
     except TimeoutError:
         await msg.reply("`Time limit reached of 5 min.\nPress /start to create again.`")
         return
@@ -86,10 +86,10 @@ async def genStr(_, msg: Message):
     try:
         await client.sign_in(phone, code.phone_code_hash, phone_code=' '.join(str(otp)))
     except PhoneCodeInvalid:
-        await msg.reply("`Invalid Code.`\nPress /start to create again.")
+        await msg.reply("`Invalid Code.`\n\nPress /start to create again.")
         return
     except PhoneCodeExpired:
-        await msg.reply("`Code is Expired.`\nPress /start to create again.")
+        await msg.reply("`Code is Expired.`\n\nPress /start to create again.")
         return
     except SessionPasswordNeeded:
         try:
@@ -100,7 +100,7 @@ async def genStr(_, msg: Message):
                         )
             ).text
         except TimeoutError:
-            await msg.reply("`Time limit reached of 5 min.\nPress /start to create again.`")
+            await msg.reply("`Time limit reached of 5 min.\n\nPress /start to create again.`")
             return
         if await is_cancel(msg, new_code):
             return
