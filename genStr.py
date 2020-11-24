@@ -41,7 +41,7 @@ async def genStr(_, msg: Message):
         return
     phone = (await bot.ask(chat.id, PHONE_NUMBER)).text
     while not phone.startswith("+"):
-        phone = (await bot.ask("`Phone number Invalid.`\nUse Country Code Before your Phone Number.")).text
+        phone = (await bot.ask(chat.id, "`Phone number Invalid.`\nUse Country Code Before your Phone Number.")).text
     try:
         client = Client("my_account", api_id=api_id, api_hash=api_hash)
     except Exception as e:
