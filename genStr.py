@@ -33,20 +33,19 @@ async def genStr(_, msg: Message):
     try:
         api_id = int(api_id)
     except Exception:
-        await msg.reply("`API ID Invalid.`")
+        await msg.reply("`API ID Invalid.`\nPress /start to create again.")
         return
     api_hash = (await bot.ask(chat.id, HASH)).text
     if not len(api_hash) >= 30:
-        await msg.reply("`API HASH Invalid.`")
+        await msg.reply("`API HASH Invalid.`\nPress /start to create again.")
         return
     phone = (await bot.ask(chat.id, PHONE_NUMBER)).text
-    if not phone.startswith("+"):
-        await msg.reply("`Phone number Invalid.`\nUse Country Code Before your Phone Number.")
-        return
+    while not phone.startswith("+"):
+        phone = (await bot.ask("`Phone number Invalid.`\nUse Country Code Before your Phone Number.")).text
     try:
         client = Client("my_account", api_id=api_id, api_hash=api_hash)
     except Exception as e:
-        await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`")
+        await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`\nPress /start to create again.")
         return
     try:
         await client.connect()
@@ -59,19 +58,19 @@ async def genStr(_, msg: Message):
         await msg.reply(f"`you have floodwait of {e.x} Seconds`")
         return
     except ApiIdInvalid:
-        await msg.reply("`Api Id and Api Hash are Invalid.`")
+        await msg.reply("`Api Id and Api Hash are Invalid.`\nPress /start to create again.")
         return
     except PhoneNumberInvalid:
-        await msg.reply("`your Phone Number is Invalid.`")
+        await msg.reply("`your Phone Number is Invalid.`\nPress /start to create again.")
         return
     otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter to Continue.`")).text
     try:
         await client.sign_in(phone, code.phone_code_hash, phone_code='-'.join(otp))
     except PhoneCodeInvalid:
-        await msg.reply("`Invalid Code.`\nPress /start for create again.")
+        await msg.reply("`Invalid Code.`\nPress /start to create again.")
         return
     except PhoneCodeExpired:
-        await msg.reply("`Code is Expired.`\nPress /start for create again.")
+        await msg.reply("`Code is Expired.`\nPress /start to create again.")
         return
     except SessionPasswordNeeded:
         new_code = (await bot.ask(
@@ -92,7 +91,7 @@ async def genStr(_, msg: Message):
         await client.send_message("me", f"#USERGE #HU_STRING_SESSION\n\n```{session_string}```")
         await bot.send_message(
             chat.id, 
-            text="`String Session is Successfully.\nClick on Button Below.`",
+            text="`String Session is Successfully Generated.\nClick on Button Below.`",
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text="Click Me", url=f"tg://user?id={chat.id}")]]
             )
