@@ -124,7 +124,8 @@ async def genStr(_, msg: Message):
 async def is_cancel(msg: Message, text: str):
     if text.startswith("/cancel"):
         await msg.reply("`Process Cancelled.`")
-        return
+        return True
+    return False
 
 if __name__ == "__main__":
     bot.run()
