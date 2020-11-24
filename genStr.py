@@ -23,25 +23,31 @@ API = """Hi {}
 Welcome to Userge's `HU_STRING_SESSION` generator Bot.
 
 `Send your API_ID to Continue.`"""
-HASH = "`Send your API_HASH to Continue.`"
-PHONE_NUMBER = "`Now send your Phone number to Continue.`"
+HASH = "`Send your API_HASH to Continue.`\nPress /cancel to Cancel."
+PHONE_NUMBER = "`Now send your Phone number to Continue.`\nPress /cancel to Cancel."
 
 @bot.on_message(filters.private & filters.command("start"))
 async def genStr(_, msg: Message):
     chat = msg.chat
     api_id = (await bot.ask(chat.id, API.format(msg.from_user.mention))).text
+    if cancelled(msg, api_id):
+        return
     try:
         api_id = int(api_id)
     except Exception:
         await msg.reply("`API ID Invalid.`\nPress /start to create again.")
         return
     api_hash = (await bot.ask(chat.id, HASH)).text
+    if cancelled(msg, api_hash):
+        return
     if not len(api_hash) >= 30:
         await msg.reply("`API HASH Invalid.`\nPress /start to create again.")
         return
     phone = (await bot.ask(chat.id, PHONE_NUMBER)).text
+    if cancelled(msg, phone):
+        return
     while not phone.startswith("+"):
-        phone = (await bot.ask(chat.id, "`Phone number Invalid.`\nUse Country Code Before your Phone Number.")).text
+        phone = (await bot.ask(chat.id, "`Phone number Invalid.`\nUse Country Code Before your Phone Number.\nPress /cancel to Cancel.")).text
     try:
         client = Client("my_account", api_id=api_id, api_hash=api_hash)
     except Exception as e:
@@ -63,7 +69,9 @@ async def genStr(_, msg: Message):
     except PhoneNumberInvalid:
         await msg.reply("`your Phone Number is Invalid.`\nPress /start to create again.")
         return
-    otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter to Continue.`")).text
+    otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter to Continue.`\nPress /cancel to Cancel.")).text
+    if cancelled(msg, otp):
+        return
     try:
         await client.sign_in(phone, code.phone_code_hash, phone_code='-'.join(otp))
     except PhoneCodeInvalid:
@@ -75,9 +83,11 @@ async def genStr(_, msg: Message):
     except SessionPasswordNeeded:
         new_code = (await bot.ask(
                         chat.id, 
-                        "`This account have two-step verification code.\nPlease enter your second factor authentication code.`"
+                        "`This account have two-step verification code.\nPlease enter your second factor authentication code.`\nPress /cancel to Cancel."
                     )
         ).text
+        if cancelled(msg, new_code):
+            return
         try:
             await client.check_password(new_code)
         except Exception as e:
@@ -98,6 +108,12 @@ async def genStr(_, msg: Message):
         )
     except Exception as e:
         await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`")
+        return
+
+
+def cancelled(msg: Message, text: str):
+    if text.startwith("/cancel")
+        await msg.reply("`Process Cancelled.`")
         return
 
 if __name__ == "__main__":
