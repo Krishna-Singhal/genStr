@@ -30,7 +30,7 @@ PHONE_NUMBER = "`Now send your Phone number to Continue.`\nPress /cancel to Canc
 async def genStr(_, msg: Message):
     chat = msg.chat
     api_id = (await bot.ask(chat.id, API.format(msg.from_user.mention))).text
-    if cancelled(msg, api_id):
+    if await cancelled(msg, api_id):
         return
     try:
         api_id = int(api_id)
@@ -38,13 +38,13 @@ async def genStr(_, msg: Message):
         await msg.reply("`API ID Invalid.`\nPress /start to create again.")
         return
     api_hash = (await bot.ask(chat.id, HASH)).text
-    if cancelled(msg, api_hash):
+    if await cancelled(msg, api_hash):
         return
     if not len(api_hash) >= 30:
         await msg.reply("`API HASH Invalid.`\nPress /start to create again.")
         return
     phone = (await bot.ask(chat.id, PHONE_NUMBER)).text
-    if cancelled(msg, phone):
+    if await cancelled(msg, phone):
         return
     while not phone.startswith("+"):
         phone = (await bot.ask(chat.id, "`Phone number Invalid.`\nUse Country Code Before your Phone Number.\nPress /cancel to Cancel.")).text
@@ -70,7 +70,7 @@ async def genStr(_, msg: Message):
         await msg.reply("`your Phone Number is Invalid.`\nPress /start to create again.")
         return
     otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter to Continue.`\nPress /cancel to Cancel.", timeout=300)).text
-    if cancelled(msg, otp):
+    if await cancelled(msg, otp):
         return
     try:
         await client.sign_in(phone, code.phone_code_hash, phone_code='-'.join(otp))
@@ -87,7 +87,7 @@ async def genStr(_, msg: Message):
                         timeout=300
                     )
         ).text
-        if cancelled(msg, new_code):
+        if await cancelled(msg, new_code):
             return
         try:
             await client.check_password(new_code)
@@ -112,7 +112,7 @@ async def genStr(_, msg: Message):
         return
 
 
-def cancelled(msg: Message, text: str):
+async def cancelled(msg: Message, text: str):
     if text.startwith("/cancel"):
         await msg.reply("`Process Cancelled.`")
         return
