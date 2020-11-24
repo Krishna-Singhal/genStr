@@ -50,7 +50,7 @@ async def genStr(_, msg: Message):
             continue
         if await is_cancel(msg, phone):
             return
-        confirm = (await bot.ask(chat.id, f'Is "{phone}" correct? (y/n): ')).text.lower()
+        confirm = (await bot.ask(chat.id, f'Is "{phone}" correct? (y/n): \n\ntype: `y` (If Yes)\ntype: `n` (If No)')).text.lower()
         if await is_cancel(msg, confirm):
             return
         if confirm == "y":
