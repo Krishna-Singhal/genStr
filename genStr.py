@@ -1,6 +1,7 @@
 import os
 import asyncio 
 
+from aysncio.exceptions import TimeoutError
 from pyrogram import filters, Client
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.errors import (
@@ -30,7 +31,7 @@ PHONE_NUMBER = "`Now send your Phone number to Continue.`\nPress /cancel to Canc
 async def genStr(_, msg: Message):
     chat = msg.chat
     api_id = (await bot.ask(chat.id, API.format(msg.from_user.mention))).text
-    if await cancelled(msg, api_id):
+    if await is_cancel(msg, api_id):
         return
     try:
         api_id = int(api_id)
@@ -38,13 +39,13 @@ async def genStr(_, msg: Message):
         await msg.reply("`API ID Invalid.`\nPress /start to create again.")
         return
     api_hash = (await bot.ask(chat.id, HASH)).text
-    if await cancelled(msg, api_hash):
+    if await is_cancel(msg, api_hash):
         return
     if not len(api_hash) >= 30:
         await msg.reply("`API HASH Invalid.`\nPress /start to create again.")
         return
     phone = (await bot.ask(chat.id, PHONE_NUMBER)).text
-    if await cancelled(msg, phone):
+    if await is_cancel(msg, phone):
         return
     while not phone.startswith("+"):
         phone = (await bot.ask(chat.id, "`Phone number Invalid.`\nUse Country Code Before your Phone Number.\nPress /cancel to Cancel.")).text
@@ -69,8 +70,12 @@ async def genStr(_, msg: Message):
     except PhoneNumberInvalid:
         await msg.reply("`your Phone Number is Invalid.`\nPress /start to create again.")
         return
-    otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter to Continue.`\nPress /cancel to Cancel.", timeout=300)).text
-    if await cancelled(msg, otp):
+    try:
+        otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter to Continue.`\nPress /cancel to Cancel.", timeout=300)).text
+    except TimeoutError:
+        await msg.reply("`Time limit reached of 5 min.\nPress /start to create again.`")
+        return
+    if await is_cancel(msg, otp):
         return
     try:
         await client.sign_in(phone, code.phone_code_hash, phone_code='-'.join(otp))
@@ -81,13 +86,17 @@ async def genStr(_, msg: Message):
         await msg.reply("`Code is Expired.`\nPress /start to create again.")
         return
     except SessionPasswordNeeded:
-        new_code = (await bot.ask(
-                        chat.id, 
-                        "`This account have two-step verification code.\nPlease enter your second factor authentication code.`\nPress /cancel to Cancel.",
-                        timeout=300
-                    )
-        ).text
-        if await cancelled(msg, new_code):
+        try:
+            new_code = (await bot.ask(
+                            chat.id, 
+                            "`This account have two-step verification code.\nPlease enter your second factor authentication code.`\nPress /cancel to Cancel.",
+                            timeout=300
+                        )
+            ).text
+        except TimeoutError:
+            await msg.reply("`Time limit reached of 5 min.\nPress /start to create again.`")
+            return
+        if await is_cancel(msg, new_code):
             return
         try:
             await client.check_password(new_code)
@@ -112,7 +121,7 @@ async def genStr(_, msg: Message):
         return
 
 
-async def cancelled(msg: Message, text: str):
+async def is_cancel(msg: Message, text: str):
     if text.startswith("/cancel"):
         await msg.reply("`Process Cancelled.`")
         return
