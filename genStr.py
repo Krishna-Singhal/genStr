@@ -119,7 +119,7 @@ async def genStr(_, msg: Message):
         reply_markup = InlineKeyboardMarkup(
             [[InlineKeyboardButton(text="Click Me", url=f"tg://openmessage?user_id={chat.id}")]]
         )
-        await msg.reply(text, reply_marup=reply_markup)
+        await bot.send_message(chat.id, text, reply_marup=reply_markup)
     except Exception as e:
         await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`")
         return
