@@ -21,7 +21,7 @@ bot = Client(":memory:",
              bot_token=BOT_TOKEN)
 
 API = """Hi {}
-Welcome to Userge's `HU_STRING_SESSION` generator Bot.
+Welcome to Pyrogram's `HU_STRING_SESSION` generator Bot.
 
 `Send your API_ID to Continue.`"""
 HASH = "`Send your API_HASH to Continue.`\nPress /cancel to Cancel."
@@ -84,7 +84,7 @@ async def genStr(_, msg: Message):
     if await is_cancel(msg, otp):
         return
     try:
-        await client.sign_in(phone, code.phone_code_hash, phone_code=otp)
+        await client.sign_in(phone, code.phone_code_hash, phone_code=' '.join(str(otp)))
     except PhoneCodeInvalid:
         await msg.reply("`Invalid Code.`\nPress /start to create again.")
         return
@@ -119,7 +119,7 @@ async def genStr(_, msg: Message):
         reply_markup = InlineKeyboardMarkup(
             [[InlineKeyboardButton(text="Click Me", url=f"tg://openmessage?user_id={chat.id}")]]
         )
-        await bot.send_message(chat.id, text, reply_marup=reply_markup)
+        await bot.send_message(chat.id, text, reply_markup=reply_markup)
     except Exception as e:
         await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`")
         return
