@@ -69,7 +69,7 @@ async def genStr(_, msg: Message):
     except PhoneNumberInvalid:
         await msg.reply("`your Phone Number is Invalid.`\nPress /start to create again.")
         return
-    otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter to Continue.`\nPress /cancel to Cancel.")).text
+    otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter to Continue.`\nPress /cancel to Cancel.", timeout=300)).text
     if cancelled(msg, otp):
         return
     try:
@@ -83,7 +83,8 @@ async def genStr(_, msg: Message):
     except SessionPasswordNeeded:
         new_code = (await bot.ask(
                         chat.id, 
-                        "`This account have two-step verification code.\nPlease enter your second factor authentication code.`\nPress /cancel to Cancel."
+                        "`This account have two-step verification code.\nPlease enter your second factor authentication code.`\nPress /cancel to Cancel.",
+                        timeout=300
                     )
         ).text
         if cancelled(msg, new_code):
