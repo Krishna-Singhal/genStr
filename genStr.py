@@ -1,7 +1,9 @@
-import os
-import asyncio 
+import asyncio
 
+from bot import bot, HU_APP
+from pyromod import listen
 from asyncio.exceptions import TimeoutError
+
 from pyrogram import filters, Client
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.errors import (
@@ -9,28 +11,26 @@ from pyrogram.errors import (
     PhoneNumberInvalid, ApiIdInvalid,
     PhoneCodeInvalid, PhoneCodeExpired
 )
-from pyromod import listen
 
-API_ID = int(os.environ.get("API_ID"))
-API_HASH = os.environ.get("API_HASH")
-BOT_TOKEN = os.environ.get('BOT_TOKEN')
-       
-bot = Client(":memory:",
-             api_id=API_ID,
-             api_hash=API_HASH,
-             bot_token=BOT_TOKEN)
-
-API = """Hi {}
+API_TEXT = """Hi {}
 Welcome to Pyrogram's `HU_STRING_SESSION` generator Bot.
 
 `Send your API_ID to Continue.`"""
-HASH = "`Send your API_HASH to Continue.`\n\nPress /cancel to Cancel."
-PHONE_NUMBER = "`Now send your Phone number to Continue include Country code. eg. +13124562345`\n\nPress /cancel to Cancel."
+HASH_TEXT = "`Send your API_HASH to Continue.`\n\nPress /cancel to Cancel."
+PHONE_NUMBER_TEXT = (
+    "`Now send your Phone number to Continue"
+    "` include Country code. eg. +13124562345`\n\n"
+    "Press /cancel to Cancel."
+)
 
 @bot.on_message(filters.private & filters.command("start"))
 async def genStr(_, msg: Message):
     chat = msg.chat
-    api_id = (await bot.ask(chat.id, API.format(msg.from_user.mention))).text
+    api_id = (
+        await bot.ask(
+            chat.id, API_TEXT.format(msg.from_user.mention)
+        )
+    ).text
     if await is_cancel(msg, api_id):
         return
     try:
@@ -38,14 +38,14 @@ async def genStr(_, msg: Message):
     except Exception:
         await msg.reply("`API ID Invalid.`\nPress /start to create again.")
         return
-    api_hash = (await bot.ask(chat.id, HASH)).text
+    api_hash = (await bot.ask(chat.id, HASH_TEXT)).text
     if await is_cancel(msg, api_hash):
         return
     if not len(api_hash) >= 30:
         await msg.reply("`API HASH Invalid.`\nPress /start to create again.")
         return
     while True:
-        phone = (await bot.ask(chat.id, PHONE_NUMBER)).text
+        phone = (await bot.ask(chat.id, PHONE_NUMBER_TEXT)).text
         if not phone:
             continue
         if await is_cancel(msg, phone):
@@ -67,6 +67,7 @@ async def genStr(_, msg: Message):
         await client.connect()
     try:
         code = await client.send_code(phone)
+        await asyncio.sleep(1)
     except FloodWait as e:
         await msg.reply(f"`you have floodwait of {e.x} Seconds`")
         return
@@ -125,11 +126,14 @@ async def genStr(_, msg: Message):
         return
 
 
+@bot.on_message(filters.private & filters.command("restart"))
+async def restart(_, msg: Message):
+    await msg.reply("`Restarting`")
+    HU_APP.restart()
+
+
 async def is_cancel(msg: Message, text: str):
     if text.startswith("/cancel"):
         await msg.reply("`Process Cancelled.`")
         return True
     return False
-
-if __name__ == "__main__":
-    bot.run()
