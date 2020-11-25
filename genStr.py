@@ -17,12 +17,20 @@ Welcome to Pyrogram's `HU_STRING_SESSION` generator Bot.
 
 `Send your API_ID to Continue.`"""
 HASH_TEXT = "`Send your API_HASH to Continue.`\n\nPress /cancel to Cancel."
-PHONE_NUMBER_TEXT = "`Now send your Phone number to Continue include Country code. eg. +13124562345`\n\nPress /cancel to Cancel."
+PHONE_NUMBER_TEXT = (
+    "`Now send your Phone number to Continue"
+    "` include Country code. eg. +13124562345`\n\n"
+    "Press /cancel to Cancel."
+)
 
 @bot.on_message(filters.private & filters.command("start"))
 async def genStr(_, msg: Message):
     chat = msg.chat
-    api_id = (await bot.ask(chat.id, API_TEXT.format(msg.from_user.mention))).text
+    api_id = (
+        await bot.ask(
+            chat.id, API_TEXT.format(msg.from_user.mention)
+        )
+    ).text
     if await is_cancel(msg, api_id):
         return
     try:
