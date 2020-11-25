@@ -1,6 +1,6 @@
-import os
 import asyncio
 
+from bot import bot
 from pyromod import listen
 from asyncio.exceptions import TimeoutError
 
@@ -59,6 +59,7 @@ async def genStr(_, msg: Message):
         await client.connect()
     try:
         code = await client.send_code(phone)
+        await asyncio.sleep(1)
     except FloodWait as e:
         await msg.reply(f"`you have floodwait of {e.x} Seconds`")
         return
