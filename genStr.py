@@ -1,6 +1,6 @@
 import asyncio
 
-from bot import bot
+from bot import bot, HU_APP
 from pyromod import listen
 from asyncio.exceptions import TimeoutError
 
@@ -116,6 +116,12 @@ async def genStr(_, msg: Message):
     except Exception as e:
         await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`")
         return
+
+
+@bot.on_message(filters.private & filters.command("restart"))
+async def restart(_, msg: Message):
+    await msg.reply("`Restarting`")
+    HU_APP.restart()
 
 
 async def is_cancel(msg: Message, text: str):
