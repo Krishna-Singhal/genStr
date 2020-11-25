@@ -137,3 +137,6 @@ async def is_cancel(msg: Message, text: str):
         await msg.reply("`Process Cancelled.`")
         return True
     return False
+
+if __name__ == "__main__":
+    bot.run()
