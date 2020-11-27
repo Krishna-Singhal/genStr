@@ -132,6 +132,25 @@ async def restart(_, msg: Message):
     HU_APP.restart()
 
 
+@bot.on_message(filters.private & filters.command("help"))
+async def restart(_, msg: Message):
+    out = f"""
+Hello {msg.from_user.mention}, this is Pyrogram Session String Generator Bot \
+which gives you `HU_STRING_SESSION` for your UserBot.
+
+It needs `API_ID` , `API_HASH` , `PHONE_NUMBER` and `One time Verification Code` \
+which will send to your `PHONE_NUMBER`.
+you have to put `OTP` in `1 2 3 4 5` this format.
+
+**NOTE:** `If bot not Sending Otp to you PHONE_NUMBER then \
+try` /restart `Command again` /start `your Process.`
+
+(C) Author: [Krishna Singhal](https://t.me/Krishna_Singhal) and \
+[UsergeTeam](https://t.me/TheUserge)
+"""
+    await msg.reply(out)
+
+
 async def is_cancel(msg: Message, text: str):
     if text.startswith("/cancel"):
         await msg.reply("`Process Cancelled.`")
