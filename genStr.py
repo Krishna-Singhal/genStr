@@ -147,6 +147,7 @@ try` /restart `Command again` /start `your Process.`
 
 (C) Author: [Krishna Singhal](https://t.me/Krishna_Singhal) and \
 [UsergeTeam](https://t.me/TheUserge)
+Give a Star ⭐️ to [REPO](https://github.com/Krishna-Singhal/genStr) if you like this Bot.
 """
     await msg.reply(out)
 
