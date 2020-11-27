@@ -143,7 +143,7 @@ which will send to your `PHONE_NUMBER`.
 you have to put `OTP` in `1 2 3 4 5` this format.
 
 **NOTE:** `If bot not Sending Otp to your PHONE_NUMBER then try` 
-/restart `Command again` /start `your Process.`
+/restart `Command and again` /start `your Process.`
 
 (C) Author: [Krishna Singhal](https://t.me/Krishna_Singhal) and \
 [UsergeTeam](https://t.me/TheUserge)
