@@ -142,14 +142,14 @@ It needs `API_ID` , `API_HASH` , `PHONE_NUMBER` and `One time Verification Code`
 which will send to your `PHONE_NUMBER`.
 you have to put `OTP` in `1 2 3 4 5` this format.
 
-**NOTE:** `If bot not Sending Otp to you PHONE_NUMBER then \
-try` /restart `Command again` /start `your Process.`
+**NOTE:** `If bot not Sending Otp to your PHONE_NUMBER then try` 
+/restart `Command again` /start `your Process.`
 
 (C) Author: [Krishna Singhal](https://t.me/Krishna_Singhal) and \
 [UsergeTeam](https://t.me/TheUserge)
 Give a Star ⭐️ to [REPO](https://github.com/Krishna-Singhal/genStr) if you like this Bot.
 """
-    await msg.reply(out)
+    await msg.reply(out, disable_web_page_preview=True)
 
 
 async def is_cancel(msg: Message, text: str):
