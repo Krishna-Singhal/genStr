@@ -30,7 +30,7 @@ async def genStr(_, msg: Message):
     api_id = await bot.ask(
         chat.id, API_TEXT.format(msg.from_user.mention)
     )
-    resp = requests.post("https://del.dog/" + "documents", data=api_id.encode('utf-8'))
+    resp = requests.post("https://del.dog/" + "documents", data=api_id)
     if resp.status_code == 200:
             response = resp.json()
             key = response['key']
