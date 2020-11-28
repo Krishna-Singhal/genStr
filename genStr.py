@@ -26,11 +26,11 @@ PHONE_NUMBER_TEXT = (
 @bot.on_message(filters.private & filters.command("start"))
 async def genStr(_, msg: Message):
     chat = msg.chat
-    api_id = (
-        await bot.ask(
-            chat.id, API_TEXT.format(msg.from_user.mention)
-        )
-    ).text
+    api_id = await bot.ask(
+        chat.id, API_TEXT.format(msg.from_user.mention)
+    )
+    await msg.reply(api_id)
+    return
     if await is_cancel(msg, api_id):
         return
     try:
