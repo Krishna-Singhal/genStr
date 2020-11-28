@@ -26,36 +26,36 @@ PHONE_NUMBER_TEXT = (
 @bot.on_message(filters.private & filters.command("start"))
 async def genStr(_, msg: Message):
     chat = msg.chat
-    api_id = await bot.ask(
+    api = await bot.ask(
         chat.id, API_TEXT.format(msg.from_user.mention)
     )
-    if await is_cancel(msg, api_id.text):
+    if await is_cancel(msg, api.text):
         return
     try:
-        api_id = int(api_id.text)
+        check_api = int(api.text)
     except Exception:
-        await api_id.delete()
+        await api.delete()
         await msg.reply("`API ID Invalid.`\nPress /start to create again.")
         return
-    api_id = api_id.text
-    await api_id.delete()
-    api_hash = await bot.ask(chat.id, HASH_TEXT)
-    if await is_cancel(msg, api_hash.text):
+    api_id = api.text
+    await api.delete()
+    hash = await bot.ask(chat.id, HASH_TEXT)
+    if await is_cancel(msg, hash.text):
         return
-    if not len(api_hash.text) >= 30:
-        await api_id.delete()
+    if not len(hash.text) >= 30:
+        await hash.delete()
         await msg.reply("`API HASH Invalid.`\nPress /start to create again.")
         return
-    api_hash = api_hash.text
-    await api_hash.delete()
+    api_hash = hash.text
+    await hash.delete()
     while True:
-        phone = await bot.ask(chat.id, PHONE_NUMBER_TEXT)
-        if not phone.text:
+        number = await bot.ask(chat.id, PHONE_NUMBER_TEXT)
+        if not number.text:
             continue
-        if await is_cancel(msg, phone.text):
+        if await is_cancel(msg, number.text):
             return
-        phone = phone.text
-        await phone.delete()
+        phone = number.text
+        await number.delete()
         confirm = await bot.ask(chat.id, f'Is "{phone}" correct? (y/n): \n\ntype: `y` (If Yes)\ntype: `n` (If No)')
         if await is_cancel(msg, confirm.text):
             return
@@ -95,10 +95,10 @@ async def genStr(_, msg: Message):
         return
     if await is_cancel(msg, otp.text):
         return
-    otp = otp.text
+    otp_code = otp.text
     await otp.delete()
     try:
-        await client.sign_in(phone, code.phone_code_hash, phone_code=' '.join(str(otp)))
+        await client.sign_in(phone, code.phone_code_hash, phone_code=' '.join(str(otp_code)))
     except PhoneCodeInvalid:
         await msg.reply("`Invalid Code.`\n\nPress /start to create again.")
         return
@@ -107,7 +107,7 @@ async def genStr(_, msg: Message):
         return
     except SessionPasswordNeeded:
         try:
-            new_code = await bot.ask(
+            two_step_code = await bot.ask(
                 chat.id, 
                 "`This account have two-step verification code.\nPlease enter your second factor authentication code.`\nPress /cancel to Cancel.",
                 timeout=300
@@ -115,10 +115,10 @@ async def genStr(_, msg: Message):
         except TimeoutError:
             await msg.reply("`Time limit reached of 5 min.\n\nPress /start to create again.`")
             return
-        if await is_cancel(msg, new_code):
+        if await is_cancel(msg, two_step_code.text):
             return
-        new_code = new_code.text
-        await new_code.delete()
+        new_code = two_step_code.text
+        await two_step_code.delete()
         try:
             await client.check_password(new_code)
         except Exception as e:
