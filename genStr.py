@@ -29,31 +29,38 @@ async def genStr(_, msg: Message):
     api_id = await bot.ask(
         chat.id, API_TEXT.format(msg.from_user.mention)
     )
-    await api_id.delete()
-    return
-    if await is_cancel(msg, api_id):
+    if await is_cancel(msg, api_id.text):
         return
     try:
-        api_id = int(api_id)
+        api_id = int(api_id.text)
     except Exception:
+        await api_id.delete()
         await msg.reply("`API ID Invalid.`\nPress /start to create again.")
         return
-    api_hash = (await bot.ask(chat.id, HASH_TEXT)).text
-    if await is_cancel(msg, api_hash):
+    api_id = api_id.text
+    await api_id.delete()
+    api_hash = await bot.ask(chat.id, HASH_TEXT)
+    if await is_cancel(msg, api_hash.text):
         return
-    if not len(api_hash) >= 30:
+    if not len(api_hash.text) >= 30:
+        await api_id.delete()
         await msg.reply("`API HASH Invalid.`\nPress /start to create again.")
         return
+    api_hash = api_hash.text
+    await api_hash.delete()
     while True:
-        phone = (await bot.ask(chat.id, PHONE_NUMBER_TEXT)).text
-        if not phone:
+        phone = await bot.ask(chat.id, PHONE_NUMBER_TEXT)
+        if not phone.text:
             continue
-        if await is_cancel(msg, phone):
+        if await is_cancel(msg, phone.text):
             return
-        confirm = (await bot.ask(chat.id, f'Is "{phone}" correct? (y/n): \n\ntype: `y` (If Yes)\ntype: `n` (If No)')).text.lower()
-        if await is_cancel(msg, confirm):
+        phone = phone.text
+        await phone.delete()
+        confirm = await bot.ask(chat.id, f'Is "{phone}" correct? (y/n): \n\ntype: `y` (If Yes)\ntype: `n` (If No)'))
+        if await is_cancel(msg, confirm.text):
             return
-        if "y" in confirm:
+        if "y" in confirm.text:
+            await confirm.delete()
             break
     try:
         client = Client("my_account", api_id=api_id, api_hash=api_hash)
@@ -78,12 +85,18 @@ async def genStr(_, msg: Message):
         await msg.reply("`your Phone Number is Invalid.`\n\nPress /start to create again.")
         return
     try:
-        otp = (await bot.ask(chat.id, "`An otp is sent to your phone number, Please enter otp in `1 2 3 4 5` format.`\n\nPress /cancel to Cancel.", timeout=300)).text
+        otp = await bot.ask(
+            chat.id, ("`An otp is sent to your phone number, "
+                      "Please enter otp in `1 2 3 4 5` format.`\n\n"
+                      "`If Bot not sending OTP then try` /restart `cmd and again` /start `the Bot.`\n"
+                      "Press /cancel to Cancel."), timeout=300)
     except TimeoutError:
         await msg.reply("`Time limit reached of 5 min.\nPress /start to create again.`")
         return
-    if await is_cancel(msg, otp):
+    if await is_cancel(msg, otp.text):
         return
+    otp = otp.text
+    await otp.delete()
     try:
         await client.sign_in(phone, code.phone_code_hash, phone_code=' '.join(str(otp)))
     except PhoneCodeInvalid:
@@ -94,17 +107,18 @@ async def genStr(_, msg: Message):
         return
     except SessionPasswordNeeded:
         try:
-            new_code = (await bot.ask(
-                            chat.id, 
-                            "`This account have two-step verification code.\nPlease enter your second factor authentication code.`\nPress /cancel to Cancel.",
-                            timeout=300
-                        )
-            ).text
+            new_code = await bot.ask(
+                chat.id, 
+                "`This account have two-step verification code.\nPlease enter your second factor authentication code.`\nPress /cancel to Cancel.",
+                timeout=300
+            )
         except TimeoutError:
             await msg.reply("`Time limit reached of 5 min.\n\nPress /start to create again.`")
             return
         if await is_cancel(msg, new_code):
             return
+        new_code = new_code.text
+        await new_code.delete()
         try:
             await client.check_password(new_code)
         except Exception as e:
