@@ -1,5 +1,4 @@
 heroku3
 pyrogram
 pyromod
-requests
 TgCrypto
