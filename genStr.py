@@ -1,5 +1,4 @@
 import asyncio
-import requests
 
 from bot import bot, HU_APP
 from pyromod import listen
@@ -30,18 +29,8 @@ async def genStr(_, msg: Message):
     api_id = await bot.ask(
         chat.id, API_TEXT.format(msg.from_user.mention)
     )
-    resp = requests.post("https://del.dog/" + "documents", data=api_id)
-    if resp.status_code == 200:
-            response = resp.json()
-            key = response['key']
-            final_url = "https://del.dog/" + key
-            if response['isUrl']:
-                reply_text = (f"**Shortened** [URL]({final_url})\n"
-                              f"**Dogbin** [URL]({DOGBIN_URL}v/{key})")
-            else:
-                reply_text = f"**Dogbin** [URL]({final_url}.txt)"
-            await message.edit(reply_text, disable_web_page_preview=True)
-            return
+    await api_id.delete()
+    return
     if await is_cancel(msg, api_id):
         return
     try:
