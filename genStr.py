@@ -59,7 +59,7 @@ async def genStr(_, msg: Message):
         confirm = await bot.ask(chat.id, f'`Is "{phone}" correct? (y/n):` \n\ntype: `y` (If Yes)\ntype: `n` (If No)')
         if await is_cancel(msg, confirm.text):
             return
-        if "y" in confirm.text:
+        if "y" in confirm.text.lower():
             await confirm.delete()
             break
     try:
