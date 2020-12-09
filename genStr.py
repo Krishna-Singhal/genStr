@@ -1,4 +1,6 @@
+import time
 import asyncio
+from typing import Dict
 
 from bot import bot, HU_APP
 from pyromod import listen
@@ -12,6 +14,7 @@ from pyrogram.errors import (
     PhoneCodeInvalid, PhoneCodeExpired
 )
 
+MNG_RESTART: Dict[int, int] = {}
 API_TEXT = """Hi {}
 Welcome to Pyrogram's `HU_STRING_SESSION` generator Bot.
 
@@ -48,6 +51,16 @@ async def genStr(_, msg: Message):
         return
     api_hash = hash.text
     await hash.delete()
+    try:
+        client = Client("my_account", api_id=api_id, api_hash=api_hash)
+    except Exception as e:
+        await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`\nPress /start to create again.")
+        return
+    try:
+        await client.connect()
+    except ConnectionError:
+        await client.disconnect()
+        await client.connect()
     while True:
         number = await bot.ask(chat.id, PHONE_NUMBER_TEXT)
         if not number.text:
@@ -63,16 +76,6 @@ async def genStr(_, msg: Message):
             await confirm.delete()
             break
     try:
-        client = Client("my_account", api_id=api_id, api_hash=api_hash)
-    except Exception as e:
-        await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`\nPress /start to create again.")
-        return
-    try:
-        await client.connect()
-    except ConnectionError:
-        await client.disconnect()
-        await client.connect()
-    try:
         code = await client.send_code(phone)
         await asyncio.sleep(1)
     except FloodWait as e:
@@ -87,7 +90,7 @@ async def genStr(_, msg: Message):
     try:
         otp = await bot.ask(
             chat.id, ("`An otp is sent to your phone number, "
-                      "Please enter otp in `1 2 3 4 5` format.`\n\n"
+                      "Please enter otp in\n`1 2 3 4 5` format.`\n\n"
                       "`If Bot not sending OTP then try` /restart `cmd and again` /start `the Bot.`\n"
                       "Press /cancel to Cancel."), timeout=300)
     except TimeoutError:
@@ -144,6 +147,21 @@ async def genStr(_, msg: Message):
 async def restart(_, msg: Message):
     await msg.reply("`Restarting`")
     HU_APP.restart()
+#    global MNG_RESTART  # pylint: disable=global-statement
+#    if msg.from_user.id == 1158855661:
+#        return HU_APP.restart()
+#    time_ = 3000
+#    time =  MNG_RESTART.get(msg.from_user.id, 0)
+#    if time:
+#        n_t = time.time() - time
+#        if n_t >= time_:
+#            await msg.reply("`Restarting`")
+#             HU_APP.restart()
+#        else:
+#            await msg.reply("`Dont Spam /restart Command.`")
+#            await bot.send_message(1158855661, f"{msg.from_user.mention} Spamming")
+#    else:
+#        MNG_RESTART = {msg.from_user.id: time.time()}
 
 
 @bot.on_message(filters.private & filters.command("help"))
