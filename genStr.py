@@ -162,18 +162,18 @@ async def restart(_, msg: Message):
         await msg.reply('✅')
         return HU_APP.restart()
     path = os.path.join('.db', 'json_db.txt')
-    time_ = 3000
-    time =  MNG_RESTART.get(msg.from_user.id, 0)
-    if time:
-        n_t = time.time() - time
-        if n_t >= time_:
+    s_time = 3000
+    p_time =  MNG_RESTART.get(msg.from_user.id, 0)
+    if p_time:
+        n_t = time.time() - p_time
+        if n_t >= s_time:
             MNG_RESTART.update({msg.from_user.id: time.time()})
             json.dump(MNG_RESTART, open(path, 'w'))
             await msg.reply("`restarting, just wait 10 seconds.`")
             HU_APP.restart()
         else:
             await msg.reply("`you spamming /restart cmd`, [that's why](https://t.me/usergeot/645498)")
-            await bot.send_message(1158855661, f"{msg.from_user.mention} Spamming")
+            await bot.send_message(-1001311075607, f"{msg.from_user.mention} Spamming")
     else:
         MNG_RESTART.update({msg.from_user.id: time.time()})
         json.dump(MNG_RESTART, open(path, 'w'))
