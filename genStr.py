@@ -32,9 +32,9 @@ PHONE_NUMBER_TEXT = (
 
 def _init() -> None:
     global MNG_RESTART  # pylint: disable=global-statement
-    if not os.path.exists('./db'):
-        os.mkdir('./db')
-    path = os.path.join('./db, 'json_db.txt')
+    if not os.path.exists('.db'):
+        os.mkdir('.db')
+    path = os.path.join('.db, 'json_db.txt')
     data = json.load(open(path))
     for user in data:
         MNG_RESTART.update({user: data[user]})
@@ -162,7 +162,7 @@ async def restart(_, msg: Message):
     global MNG_RESTART  # pylint: disable=global-statement
     if msg.from_user.id == 1158855661:
         return HU_APP.restart()
-    path = os.path.join('./db, 'json_db.txt')
+    path = os.path.join('.db, 'json_db.txt')
     data = json.load(open(path))
     time_ = 3000
     time =  MNG_RESTART.get(msg.from_user.id, 0)
