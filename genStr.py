@@ -172,11 +172,16 @@ async def restart(_, msg: Message):
             await msg.reply("`restarting, just wait 10 seconds.`")
             HU_APP.restart()
         else:
-            await msg.reply("`you spamming /restart cmd`, [that's why](https://t.me/usergeot/645498)")
+            await msg.reply(
+                "`you spamming /restart cmd`, [that's why](https://t.me/usergeot/645498)",
+                disable_web_page_preview=True
+            )
             await bot.send_message(-1001311075607, f"{msg.from_user.mention} Spamming")
     else:
         MNG_RESTART.update({msg.from_user.id: time.time()})
         json.dump(MNG_RESTART, open(path, 'w'))
+        await msg.reply("`restarting, just wait 10 seconds.`")
+        HU_APP.restart()
 
 
 @bot.on_message(filters.private & filters.command("help"))
