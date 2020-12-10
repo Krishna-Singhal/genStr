@@ -32,8 +32,6 @@ PHONE_NUMBER_TEXT = (
 
 def _init() -> None:
     global MNG_RESTART  # pylint: disable=global-statement
-    if not os.path.exists('.db'):
-        os.mkdir('.db')
     path = os.path.join('.db, 'json_db.txt')
     data = json.load(open(path))
     for user in data:
