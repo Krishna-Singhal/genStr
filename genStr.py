@@ -162,7 +162,6 @@ async def restart(_, msg: Message):
         await msg.reply('✅')
         return HU_APP.restart()
     path = os.path.join('.db', 'json_db.txt')
-    data = json.load(open(path))
     time_ = 3000
     time =  MNG_RESTART.get(msg.from_user.id, 0)
     if time:
