@@ -1,3 +1,5 @@
+import os
+import json
 import time
 import asyncio
 from typing import Dict
@@ -15,6 +17,7 @@ from pyrogram.errors import (
 )
 
 MNG_RESTART: Dict[int, int] = {}
+
 API_TEXT = """Hi {}
 Welcome to Pyrogram's `HU_STRING_SESSION` generator Bot.
 
@@ -25,6 +28,17 @@ PHONE_NUMBER_TEXT = (
     "` include Country code. eg. +13124562345`\n\n"
     "Press /cancel to Cancel."
 )
+
+
+def _init() -> None:
+    global MNG_RESTART  # pylint: disable=global-statement
+    if not os.path.exists('./db'):
+        os.mkdir('./db')
+    path = os.path.join('./db, 'json_db.txt')
+    data = json.load(open(path))
+    for user in data:
+        MNG_RESTART.update({user: data[user]})
+
 
 @bot.on_message(filters.private & filters.command("start"))
 async def genStr(_, msg: Message):
@@ -145,23 +159,26 @@ async def genStr(_, msg: Message):
 
 @bot.on_message(filters.private & filters.command("restart"))
 async def restart(_, msg: Message):
-    await msg.reply("`Restarting`")
-    HU_APP.restart()
-#    global MNG_RESTART  # pylint: disable=global-statement
-#    if msg.from_user.id == 1158855661:
-#        return HU_APP.restart()
-#    time_ = 3000
-#    time =  MNG_RESTART.get(msg.from_user.id, 0)
-#    if time:
-#        n_t = time.time() - time
-#        if n_t >= time_:
-#            await msg.reply("`Restarting`")
-#             HU_APP.restart()
-#        else:
-#            await msg.reply("`Dont Spam /restart Command.`")
-#            await bot.send_message(1158855661, f"{msg.from_user.mention} Spamming")
-#    else:
-#        MNG_RESTART = {msg.from_user.id: time.time()}
+    global MNG_RESTART  # pylint: disable=global-statement
+    if msg.from_user.id == 1158855661:
+        return HU_APP.restart()
+    path = os.path.join('./db, 'json_db.txt')
+    data = json.load(open(path))
+    time_ = 3000
+    time =  MNG_RESTART.get(msg.from_user.id, 0)
+    if time:
+        n_t = time.time() - time
+        if n_t >= time_:
+            MNG_RESTART.update({msg.from_user.id: time.time()})
+            json.dump(MNG_RESTART, open(path, 'w'))
+            await msg.reply("`restarting, just wait 10 seconds.`")
+            HU_APP.restart()
+        else:
+            await msg.reply("`you spamming /restart cmd`, [that's why](https://t.me/usergeot/645498)")
+            await bot.send_message(1158855661, f"{msg.from_user.mention} Spamming")
+    else:
+        MNG_RESTART.update({msg.from_user.id: time.time()})
+        json.dump(MNG_RESTART, open(path, 'w'))
 
 
 @bot.on_message(filters.private & filters.command("help"))
