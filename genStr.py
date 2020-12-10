@@ -25,7 +25,7 @@ Welcome to Pyrogram's `HU_STRING_SESSION` generator Bot.
 HASH_TEXT = "`Send your API_HASH to Continue.`\n\nPress /cancel to Cancel."
 PHONE_NUMBER_TEXT = (
     "`Now send your Phone number to Continue"
-    "` include Country code. eg. +13124562345`\n\n"
+    " include Country code. eg. +13124562345`\n\n"
     "Press /cancel to Cancel."
 )
 
