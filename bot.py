@@ -35,14 +35,14 @@ class bot(Client):
         msg = await self.get_messages(
             Config.CHAT_ID, Config.DATA_ID)
         if msg:
-            self.spamdata = msg.text
+            self.spamdata = json.loads(msg.text)
 
     async def save_data(self) -> None:
         try:
             await self.edit_message_text(
                 Config.CHAT_ID,
                 Config.DATA_ID,
-                self.spamdata,
+                json.dumps(self.spamdata),
                 disable_web_page_preview=True
             )
         except MessageNotModified:
