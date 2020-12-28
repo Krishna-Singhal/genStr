@@ -16,7 +16,7 @@ class Config:
     APP_NAME = os.environ.get("APP_NAME", None)
     API_KEY = os.environ.get("API_KEY", None)
     HU_APP = from_key(API_KEY).apps()[APP_NAME]
-    CHAT_ID = os.environ.get("CHAT_ID", None)
+    CHAT_ID = int(os.environ.get("CHAT_ID", 0))
     DATA_ID = os.environ.get("DATA_ID", None)
 
 
