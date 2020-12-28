@@ -15,6 +15,8 @@ from pyrogram.errors import (
     PhoneCodeInvalid, PhoneCodeExpired
 )
 
+bot = Bot()
+
 API_TEXT = """Hi {}
 Welcome to Pyrogram's `HU_STRING_SESSION` generator Bot.
 
@@ -27,7 +29,7 @@ PHONE_NUMBER_TEXT = (
 )
 
 
-@Bot.on_message(filters.private & filters.command("start"))
+@bot.on_message(filters.private & filters.command("start"))
 async def genStr(bot: Bot, msg: Message):
     chat = msg.chat
     api = await bot.ask(
@@ -144,7 +146,7 @@ async def genStr(bot: Bot, msg: Message):
         return
 
 
-@Bot.on_message(filters.private & filters.command("restart"))
+@bot.on_message(filters.private & filters.command("restart"))
 async def restart(bot: Bot, msg: Message):
     if msg.from_user.id == 1158855661:
         await msg.reply('✅')
@@ -171,7 +173,7 @@ async def restart(bot: Bot, msg: Message):
         Config.HU_APP.restart()
 
 
-@Bot.on_message(filters.private & filters.command("help"))
+@bot.on_message(filters.private & filters.command("help"))
 async def start(_, msg: Message):
     out = f"""
 Hello {msg.from_user.mention}, this is Pyrogram Session String Generator Bot \
@@ -198,4 +200,4 @@ async def is_cancel(msg: Message, text: str):
     return False
 
 if __name__ == "__main__":
-    Bot().run()
+    bot.run()
