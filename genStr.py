@@ -27,7 +27,7 @@ PHONE_NUMBER_TEXT = (
 )
 
 
-@bot.on_message(filters.private & filters.command("start"))
+@Bot.on_message(filters.private & filters.command("start"))
 async def genStr(bot: Bot, msg: Message):
     chat = msg.chat
     api = await bot.ask(
@@ -144,7 +144,7 @@ async def genStr(bot: Bot, msg: Message):
         return
 
 
-@bot.on_message(filters.private & filters.command("restart"))
+@Bot.on_message(filters.private & filters.command("restart"))
 async def restart(bot: Bot, msg: Message):
     if msg.from_user.id == 1158855661:
         await msg.reply('✅')
@@ -171,8 +171,8 @@ async def restart(bot: Bot, msg: Message):
         Config.HU_APP.restart()
 
 
-@bot.on_message(filters.private & filters.command("help"))
-async def restart(_, msg: Message):
+@Bot.on_message(filters.private & filters.command("help"))
+async def start(_, msg: Message):
     out = f"""
 Hello {msg.from_user.mention}, this is Pyrogram Session String Generator Bot \
 which gives you `HU_STRING_SESSION` for your UserBot.
