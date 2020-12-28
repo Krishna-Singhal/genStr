@@ -31,12 +31,11 @@ class bot(Client):
             bot_token=Config.BOT_TOKEN
         )
 
-    async def load_data(self) -> Dict[Optional[str]]:
+    async def load_data(self) -> None:
         msg = await self.get_messages(
             Config.CHAT_ID, Config.DATA_ID)
         if msg:
-            return json.loads(msg.text)
-        return {}
+            self.spamdata = msg.text
 
     async def save_data(self) -> None:
         try:
