@@ -2,9 +2,8 @@ import os
 import json
 import time
 import asyncio
-from typing import Dict
 
-from bot import bot, HU_APP
+from bot import bot, Config
 from pyromod import listen
 from asyncio.exceptions import TimeoutError
 
@@ -15,8 +14,6 @@ from pyrogram.errors import (
     PhoneNumberInvalid, ApiIdInvalid,
     PhoneCodeInvalid, PhoneCodeExpired
 )
-
-MNG_RESTART: Dict[int, int] = {}
 
 API_TEXT = """Hi {}
 Welcome to Pyrogram's `HU_STRING_SESSION` generator Bot.
@@ -157,20 +154,19 @@ async def genStr(_, msg: Message):
 
 @bot.on_message(filters.private & filters.command("restart"))
 async def restart(_, msg: Message):
-    global MNG_RESTART  # pylint: disable=global-statement
     if msg.from_user.id == 1158855661:
         await msg.reply('✅')
-        return HU_APP.restart()
-    path = os.path.join('.db', 'json_db.txt')
+        return Config.HU_APP.restart()
+    await bot.load_data()
     s_time = 3000
-    p_time =  MNG_RESTART.get(msg.from_user.id, 0)
+    p_time =  bot.spamdata.get(msg.from_user.id, 0)
     if p_time:
         n_t = time.time() - p_time
         if n_t >= s_time:
-            MNG_RESTART.update({msg.from_user.id: time.time()})
-            json.dump(MNG_RESTART, open(path, 'w'))
+            bot.spamdata[msg.from_user.id] = time.time()
+            await bot.save_data()
             await msg.reply("`restarting, just wait 10 seconds.`")
-            HU_APP.restart()
+            Config.HU_APP.restart()
         else:
             await msg.reply(
                 "`you spamming /restart cmd`, [that's why](https://t.me/usergeot/645498)",
@@ -178,10 +174,10 @@ async def restart(_, msg: Message):
             )
             await bot.send_message(-1001311075607, f"{msg.from_user.mention} Spamming")
     else:
-        MNG_RESTART.update({msg.from_user.id: time.time()})
-        json.dump(MNG_RESTART, open(path, 'w'))
+        bot.spamdata[msg.from_user.id] = time.time()
+        await bot.save_data()
         await msg.reply("`restarting, just wait 10 seconds.`")
-        HU_APP.restart()
+        Config.HU_APP.restart()
 
 
 @bot.on_message(filters.private & filters.command("help"))
