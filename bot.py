@@ -23,7 +23,7 @@ class Config:
 class bot(Client):
     spamdata: Dict[int, int] = {}
 
-    def __init__():
+    def __init__(self):
         super().__init__(
             ":memory:",
             api_id=Config.APP_ID,
