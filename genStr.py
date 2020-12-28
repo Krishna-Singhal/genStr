@@ -3,7 +3,7 @@ import json
 import time
 import asyncio
 
-from bot import bot, Config
+from bot import Bot, Config
 from pyromod import listen
 from asyncio.exceptions import TimeoutError
 
@@ -27,16 +27,8 @@ PHONE_NUMBER_TEXT = (
 )
 
 
-def _init() -> None:
-    global MNG_RESTART  # pylint: disable=global-statement
-    path = os.path.join('.db', 'json_db.txt')
-    data = json.load(open(path))
-    for user in data:
-        MNG_RESTART.update({user: data[user]})
-
-
 @bot.on_message(filters.private & filters.command("start"))
-async def genStr(_, msg: Message):
+async def genStr(bot: Bot, msg: Message):
     chat = msg.chat
     api = await bot.ask(
         chat.id, API_TEXT.format(msg.from_user.mention)
@@ -153,11 +145,10 @@ async def genStr(_, msg: Message):
 
 
 @bot.on_message(filters.private & filters.command("restart"))
-async def restart(_, msg: Message):
+async def restart(bot: Bot, msg: Message):
     if msg.from_user.id == 1158855661:
         await msg.reply('✅')
         return Config.HU_APP.restart()
-    await bot.load_data()
     s_time = 3000
     p_time =  bot.spamdata.get(msg.from_user.id, 0)
     if p_time:
@@ -207,4 +198,4 @@ async def is_cancel(msg: Message, text: str):
     return False
 
 if __name__ == "__main__":
-    bot().run()
+    Bot().run()
