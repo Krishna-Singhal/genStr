@@ -20,7 +20,7 @@ class Config:
     DATA_ID = os.environ.get("DATA_ID", None)
 
 
-class bot(Client):
+class Bot(Client):
     spamdata: Dict[int, int] = {}
 
     def __init__(self):
