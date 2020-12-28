@@ -207,4 +207,4 @@ async def is_cancel(msg: Message, text: str):
     return False
 
 if __name__ == "__main__":
-    bot.run()
+    bot().run()
