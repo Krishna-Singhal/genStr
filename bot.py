@@ -24,12 +24,21 @@ class bot(Client):
     spamdata: Dict[int, int] = {}
 
     def __init__(self):
-        super().__init__(
-            ":memory:",
-            api_id=Config.API_ID,
-            api_hash=Config.API_HASH,
-            bot_token=Config.BOT_TOKEN
-        )
+        kwargs = {
+            'api_id': Config.API_ID,
+            'api_hash': Config.API_HASH,
+            'session_name': ':memory:',
+            'bot_token': Config.BOT_TOKEN
+        }
+        super().__init__(**kwargs)
+
+    async def start(self):
+        await super().start()
+        await self.load_data()
+
+    async def stop(self):
+        await self.save_data()
+        await super().stop()
 
     async def load_data(self) -> None:
         msg = await self.get_messages(
