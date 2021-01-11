@@ -51,7 +51,7 @@ class Bot(Client):
             await self.edit_message_text(
                 Config.CHAT_ID,
                 Config.DATA_ID,
-                json.dumps(self.spamdata),
+                f"`{json.dumps(self.spamdata)}`",
                 disable_web_page_preview=True
             )
         except MessageNotModified:
