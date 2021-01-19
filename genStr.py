@@ -136,7 +136,7 @@ async def genStr(bot: Bot, msg: Message):
     try:
         session_string = await client.export_session_string()
         await client.send_message("me", f"#PYROGRAM #HU_STRING_SESSION\n\n```{session_string}```")
-        await client.disconnect()
+        await client.stop()
         text = "`String Session is Successfully Generated.\nClick on Button Below.`"
         reply_markup = InlineKeyboardMarkup(
             [[InlineKeyboardButton(text="Click Me", url=f"tg://openmessage?user_id={chat.id}")]]
