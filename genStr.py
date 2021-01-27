@@ -29,7 +29,7 @@ PHONE_NUMBER_TEXT = (
 )
 
 
-@bot.on_message(filters.private & filters.command("start") ~filters.users([bot.spammers]))
+@bot.on_message(filters.private & filters.command("start") & ~filters.users([bot.spammers]))
 async def genStr(bot: Bot, msg: Message):
     chat = msg.chat
     api = await bot.ask(
@@ -195,7 +195,7 @@ Give a Star ⭐️ to [REPO](https://github.com/Krishna-Singhal/genStr) if you l
     await msg.reply(out, disable_web_page_preview=True)
 
 
-@bot.on_message(filters.private & filters.command("unban") & filters.users())
+@bot.on_message(filters.private & filters.command("unban") & filters.users(1158855661))
 async def _ban(_, msg: Message):
     if len(msg.command) > 1:
         try:
@@ -209,7 +209,7 @@ async def _ban(_, msg: Message):
             await msg.reply(out_str)
 
 
-@bot.on_message(filters.private & filters.command("unban") & filters.users())
+@bot.on_message(filters.private & filters.command("unban") & filters.users(1158855661))
 async def _unban(_, msg: Message):
     if len(msg.command) > 1:
         try:
