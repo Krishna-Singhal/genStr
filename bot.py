@@ -23,6 +23,7 @@ class Config:
 
 class Bot(Client):
     spamdata: Dict[int, int] = {}
+    spammers_dict: Dict[str, List[int]] = {}
     spammers: List[int] = []
 
     def __init__(self):
@@ -37,8 +38,10 @@ class Bot(Client):
     async def start(self):
         await super().start()
         await self.load_data()
+        self.spammers = self.spammers_dict.get('spammers')
 
     async def stop(self):
+        self.spammers_dict['spammers'] = self.spammers
         await self.save_data()
         await super().stop()
 
@@ -50,7 +53,7 @@ class Bot(Client):
         _msg = await self.get_messages(
             Config.CHAT_ID, Config.SPAMMERS_ID)
         if msg:
-            self.spammers = _msg.text
+            self.spammers_dict = json.loads(_msg.text)
 
     async def save_data(self) -> None:
         try:
@@ -63,7 +66,7 @@ class Bot(Client):
             await self.edit_message_text(
                 Config.CHAT_ID,
                 Config.SPAMMERS_ID,
-                f"`{self.spammers}`",
+                f"`{json.dumps(self.spammers_dict)}`",
                 disable_web_page_preview=True
             )
         except MessageNotModified:
