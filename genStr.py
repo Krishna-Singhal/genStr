@@ -29,7 +29,7 @@ PHONE_NUMBER_TEXT = (
 )
 
 
-@bot.on_message(filters.private & filters.command("start"))
+@bot.on_message(filters.private & filters.command("start") ~filters.users([bot.spammers]))
 async def genStr(bot: Bot, msg: Message):
     chat = msg.chat
     api = await bot.ask(
@@ -147,7 +147,7 @@ async def genStr(bot: Bot, msg: Message):
         return
 
 
-@bot.on_message(filters.private & filters.command("restart"))
+@bot.on_message(filters.private & filters.command("restart") & ~filters.users([bot.spammers]))
 async def restart(bot: Bot, msg: Message):
     if msg.from_user.id == 1158855661:
         await msg.reply('✅')
@@ -163,9 +163,10 @@ async def restart(bot: Bot, msg: Message):
             Config.HU_APP.restart()
         else:
             await msg.reply(
-                "`you spamming /restart cmd`, [that's why](https://t.me/usergeot/645498)",
+                "`you spamming /restart cmd, I banned you.`",
                 disable_web_page_preview=True
             )
+            bot.spammers.append(msg.from_user.id)
             await bot.send_message(-1001311075607, f"{msg.from_user.mention} Spamming")
     else:
         bot.spamdata[str(msg.from_user.id)] = time.time()
@@ -174,7 +175,7 @@ async def restart(bot: Bot, msg: Message):
         Config.HU_APP.restart()
 
 
-@bot.on_message(filters.private & filters.command("help"))
+@bot.on_message(filters.private & filters.command("help") & ~filters.users([bot.spammers]))
 async def start(_, msg: Message):
     out = f"""
 Hello {msg.from_user.mention}, this is Pyrogram Session String Generator Bot \
@@ -192,6 +193,34 @@ you have to put `OTP` in `1 2 3 4 5` this format.
 Give a Star ⭐️ to [REPO](https://github.com/Krishna-Singhal/genStr) if you like this Bot.
 """
     await msg.reply(out, disable_web_page_preview=True)
+
+
+@bot.on_message(filters.private & filters.command("unban") & filters.users())
+async def _ban(_, msg: Message):
+    if len(msg.command) > 1:
+        try:
+            await bot.resolve_peer(msg.command[1])
+        except Exception as e:
+            out_str = f"`{str(e)}`"
+        else:
+            out_str = "`Banned Successfully...`"
+            bot.spammers.append(msg.command[1])
+        finally:
+            await msg.reply(out_str)
+
+
+@bot.on_message(filters.private & filters.command("unban") & filters.users())
+async def _unban(_, msg: Message):
+    if len(msg.command) > 1:
+        try:
+            await bot.resolve_peer(msg.command[1])
+        except Exception as e:
+            out_str = f"`{str(e)}`"
+        else:
+            out_str = "`Unbanned Successfully...`"
+            bot.spammers.remove(msg.command[1])
+        finally:
+            await msg.reply(out_str)
 
 
 async def is_cancel(msg: Message, text: str):
