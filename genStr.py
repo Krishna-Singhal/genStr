@@ -29,7 +29,7 @@ PHONE_NUMBER_TEXT = (
 )
 
 
-@bot.on_message(filters.private & filters.command("start") & ~filters.users([bot.spammers]))
+@bot.on_message(filters.private & filters.command("start") & ~filters.user([bot.spammers]))
 async def genStr(bot: Bot, msg: Message):
     chat = msg.chat
     api = await bot.ask(
@@ -147,7 +147,7 @@ async def genStr(bot: Bot, msg: Message):
         return
 
 
-@bot.on_message(filters.private & filters.command("restart") & ~filters.users([bot.spammers]))
+@bot.on_message(filters.private & filters.command("restart") & ~filters.user([bot.spammers]))
 async def restart(bot: Bot, msg: Message):
     if msg.from_user.id == 1158855661:
         await msg.reply('✅')
@@ -175,7 +175,7 @@ async def restart(bot: Bot, msg: Message):
         Config.HU_APP.restart()
 
 
-@bot.on_message(filters.private & filters.command("help") & ~filters.users([bot.spammers]))
+@bot.on_message(filters.private & filters.command("help") & ~filters.user([bot.spammers]))
 async def start(_, msg: Message):
     out = f"""
 Hello {msg.from_user.mention}, this is Pyrogram Session String Generator Bot \
@@ -195,7 +195,7 @@ Give a Star ⭐️ to [REPO](https://github.com/Krishna-Singhal/genStr) if you l
     await msg.reply(out, disable_web_page_preview=True)
 
 
-@bot.on_message(filters.private & filters.command("unban") & filters.users(1158855661))
+@bot.on_message(filters.private & filters.command("unban") & filters.user(1158855661))
 async def _ban(_, msg: Message):
     if len(msg.command) > 1:
         try:
@@ -209,7 +209,7 @@ async def _ban(_, msg: Message):
             await msg.reply(out_str)
 
 
-@bot.on_message(filters.private & filters.command("unban") & filters.users(1158855661))
+@bot.on_message(filters.private & filters.command("unban") & filters.user(1158855661))
 async def _unban(_, msg: Message):
     if len(msg.command) > 1:
         try:
