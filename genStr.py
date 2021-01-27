@@ -153,11 +153,11 @@ async def restart(bot: Bot, msg: Message):
         await msg.reply('✅')
         return Config.HU_APP.restart()
     s_time = 3000
-    p_time =  bot.spamdata.get(msg.from_user.id, 0)
+    p_time =  bot.spamdata.get(str(msg.from_user.id), 0)
     if p_time:
         n_t = time.time() - p_time
         if n_t >= s_time:
-            bot.spamdata[msg.from_user.id] = time.time()
+            bot.spamdata[str(msg.from_user.id)] = time.time()
             await bot.save_data()
             await msg.reply("`restarting, just wait 10 seconds.`")
             Config.HU_APP.restart()
@@ -168,7 +168,7 @@ async def restart(bot: Bot, msg: Message):
             )
             await bot.send_message(-1001311075607, f"{msg.from_user.mention} Spamming")
     else:
-        bot.spamdata[msg.from_user.id] = time.time()
+        bot.spamdata[str(msg.from_user.id)] = time.time()
         await bot.save_data()
         await msg.reply("`restarting, just wait 10 seconds.`")
         Config.HU_APP.restart()
