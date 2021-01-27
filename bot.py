@@ -1,4 +1,5 @@
 import os
+import asyncio
 import json
 from typing import Dict, Optional, List
 
@@ -63,6 +64,7 @@ class Bot(Client):
                 f"`{json.dumps(self.spamdata)}`",
                 disable_web_page_preview=True
             )
+            await asyncio.sleep(1)
             self.spammers_dict['spammers'] = self.spammers
             await self.edit_message_text(
                 Config.CHAT_ID,
