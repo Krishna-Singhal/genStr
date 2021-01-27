@@ -1,6 +1,6 @@
 import os
 import json
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 from heroku3 import from_key
 from pyrogram import Client
@@ -18,10 +18,12 @@ class Config:
     HU_APP = from_key(API_KEY).apps()[APP_NAME]
     CHAT_ID = int(os.environ.get("CHAT_ID", 0))
     DATA_ID = int(os.environ.get("DATA_ID", 0))
+    SPAMMERS_ID = int(os.environ.get("SPAMMERS_ID", 0))
 
 
 class Bot(Client):
     spamdata: Dict[int, int] = {}
+    spammers: List[int] = []
 
     def __init__(self):
         kwargs = {
@@ -45,6 +47,10 @@ class Bot(Client):
             Config.CHAT_ID, Config.DATA_ID)
         if msg:
             self.spamdata = json.loads(msg.text)
+        _msg = await self.get_messages(
+            Config.CHAT_ID, Config.SPAMMERS_ID)
+        if msg:
+            self.spammers = _msg.text
 
     async def save_data(self) -> None:
         try:
@@ -52,6 +58,12 @@ class Bot(Client):
                 Config.CHAT_ID,
                 Config.DATA_ID,
                 f"`{json.dumps(self.spamdata)}`",
+                disable_web_page_preview=True
+            )
+            await self.edit_message_text(
+                Config.CHAT_ID,
+                Config.SPAMMERS_ID,
+                f"`{self.spammers}`",
                 disable_web_page_preview=True
             )
         except MessageNotModified:
