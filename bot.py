@@ -63,6 +63,7 @@ class Bot(Client):
                 f"`{json.dumps(self.spamdata)}`",
                 disable_web_page_preview=True
             )
+            self.spammers_dict['spammers'] = self.spammers
             await self.edit_message_text(
                 Config.CHAT_ID,
                 Config.SPAMMERS_ID,
