@@ -31,7 +31,7 @@ PHONE_NUMBER_TEXT = (
 
 @bot.on_message(filters.private & filters.command("start"))
 async def genStr(bot: Bot, msg: Message):
-    return await msg.reply(msg.from_user.id + "\n\n" +  bot.spammers)
+    return await msg.reply(f"{msg.from_user.id}\n\n{bot.spammers}")
     if msg.from_user.id in bot.spammers:
         return
     chat = msg.chat
