@@ -171,6 +171,7 @@ async def restart(bot: Bot, msg: Message):
                 disable_web_page_preview=True
             )
             bot.spammers.append(msg.from_user.id)
+            await bot.save_data()
             await bot.send_message(-1001311075607, f"{msg.from_user.mention} Spamming")
     else:
         bot.spamdata[str(msg.from_user.id)] = time.time()
@@ -211,6 +212,7 @@ async def _ban(_, msg: Message):
         else:
             out_str = "`Banned Successfully...`"
             bot.spammers.append(msg.command[1])
+            await bot.save_data()
         finally:
             await msg.reply(out_str)
 
@@ -225,6 +227,7 @@ async def _unban(_, msg: Message):
         else:
             out_str = "`Unbanned Successfully...`"
             bot.spammers.remove(msg.command[1])
+            await bot.save_data()
         finally:
             await msg.reply(out_str)
 
