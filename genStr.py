@@ -36,42 +36,44 @@ async def genStr(bot: Bot, msg: Message):
         chat.id, API_TEXT.format(msg.from_user.mention)
     )
     if await is_cancel(msg, api.text):
-        return await bot.sleep(msg)
+        return
     try:
         int(api.text)
     except Exception:
         await api.delete()
         await msg.reply("`API ID Invalid.`\nPress /start to create again.")
-        return await bot.sleep(msg)
+        return
     api_id = api.text
     await api.delete()
     hash = await bot.ask(chat.id, HASH_TEXT)
     if await is_cancel(msg, hash.text):
-        return await bot.sleep(msg)
+        return
     api_hash = hash.text
     await hash.delete()
     try:
         client = Client("my_account", api_id=api_id, api_hash=api_hash)
     except Exception as e:
         await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`\nPress /start to create again.")
-        return await bot.sleep(msg)
+        return
     try:
         await client.connect()
     except ConnectionError:
         await client.disconnect()
         await client.connect()
-    await msg.reply("Successfully Connected to you Client.")
+    await msg.reply("`Successfully Connected to you Client.`")
     while True:
         number = await bot.ask(chat.id, PHONE_NUMBER_TEXT)
         if not number.text:
             continue
         if await is_cancel(msg, number.text):
-            return await bot.sleep(msg)
+            await client.disconnect()
+            return
         phone = number.text
         await number.delete()
         confirm = await bot.ask(chat.id, f'`Is "{phone}" correct? (y/n):` \n\ntype: `y` (If Yes)\ntype: `n` (If No)')
         if await is_cancel(msg, confirm.text):
-            return await bot.sleep(msg)
+            await client.disconnect()
+            return
         if "y" in confirm.text.lower():
             await confirm.delete()
             break
@@ -97,7 +99,7 @@ async def genStr(bot: Bot, msg: Message):
         await msg.reply("`Time limit reached of 5 min.\nPress /start to create again.`")
         return await bot.sleep(msg)
     if await is_cancel(msg, otp.text):
-        return await bot.sleep(msg)
+        return await client.disconnect()
     otp_code = otp.text
     await otp.delete()
     try:
@@ -119,7 +121,7 @@ async def genStr(bot: Bot, msg: Message):
             await msg.reply("`Time limit reached of 5 min.\n\nPress /start to create again.`")
             return await bot.sleep(msg)
         if await is_cancel(msg, two_step_code.text):
-            return
+            return await client.disconnect()
         new_code = two_step_code.text
         await two_step_code.delete()
         try:
