@@ -4,7 +4,6 @@ import json
 from typing import Dict, Optional, List
 
 from heroku3 import from_key
-from pymongo import MongoClient
 from pyrogram import Client
 from pyromod import listen
 
@@ -18,12 +17,9 @@ class Config:
     APP_NAME = os.environ.get("APP_NAME", None)
     API_KEY = os.environ.get("API_KEY", None)
     HU_APP = from_key(API_KEY).apps()[APP_NAME]
-    DB_URI = os.environ.get("DB_URI", None)
 
 
 class Bot(Client):
-    database = MongoClient(Config.DB_URI)['genStr']
-
     def __init__(self):
         kwargs = {
             'api_id': Config.API_ID,
@@ -32,9 +28,6 @@ class Bot(Client):
             'bot_token': Config.BOT_TOKEN
         }
         super().__init__(**kwargs)
-
-    def get_collection(self, name: str):
-        return self.database['name']
 
     async def start(self):
         await super().start()
