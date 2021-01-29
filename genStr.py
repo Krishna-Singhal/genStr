@@ -31,52 +31,47 @@ PHONE_NUMBER_TEXT = (
 
 @bot.on_message(filters.private & filters.command("start"))
 async def genStr(bot: Bot, msg: Message):
-    if msg.from_user.id in bot.spammers:
-        return
     chat = msg.chat
     api = await bot.ask(
         chat.id, API_TEXT.format(msg.from_user.mention)
     )
     if await is_cancel(msg, api.text):
-        return
+        return await bot.sleep(msg)
     try:
-        check_api = int(api.text)
+        int(api.text)
     except Exception:
         await api.delete()
         await msg.reply("`API ID Invalid.`\nPress /start to create again.")
-        return
+        return await bot.sleep(msg)
     api_id = api.text
     await api.delete()
     hash = await bot.ask(chat.id, HASH_TEXT)
     if await is_cancel(msg, hash.text):
-        return
-    if not len(hash.text) >= 30:
-        await hash.delete()
-        await msg.reply("`API HASH Invalid.`\nPress /start to create again.")
-        return
+        return await bot.sleep(msg)
     api_hash = hash.text
     await hash.delete()
     try:
         client = Client("my_account", api_id=api_id, api_hash=api_hash)
     except Exception as e:
         await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`\nPress /start to create again.")
-        return
+        return await bot.sleep(msg)
     try:
         await client.connect()
     except ConnectionError:
         await client.disconnect()
         await client.connect()
+    await msg.reply("Successfully Connected to you Client.")
     while True:
         number = await bot.ask(chat.id, PHONE_NUMBER_TEXT)
         if not number.text:
             continue
         if await is_cancel(msg, number.text):
-            return
+            return await bot.sleep(msg)
         phone = number.text
         await number.delete()
         confirm = await bot.ask(chat.id, f'`Is "{phone}" correct? (y/n):` \n\ntype: `y` (If Yes)\ntype: `n` (If No)')
         if await is_cancel(msg, confirm.text):
-            return
+            return await bot.sleep(msg)
         if "y" in confirm.text.lower():
             await confirm.delete()
             break
@@ -85,13 +80,13 @@ async def genStr(bot: Bot, msg: Message):
         await asyncio.sleep(1)
     except FloodWait as e:
         await msg.reply(f"`you have floodwait of {e.x} Seconds`")
-        return
+        return await bot.sleep(msg)
     except ApiIdInvalid:
         await msg.reply("`Api Id and Api Hash are Invalid.`\n\nPress /start to create again.")
-        return
+        return await bot.sleep(msg)
     except PhoneNumberInvalid:
         await msg.reply("`your Phone Number is Invalid.`\n\nPress /start to create again.")
-        return
+        return await bot.sleep(msg)
     try:
         otp = await bot.ask(
             chat.id, ("`An otp is sent to your phone number, "
@@ -100,19 +95,19 @@ async def genStr(bot: Bot, msg: Message):
                       "Press /cancel to Cancel."), timeout=300)
     except TimeoutError:
         await msg.reply("`Time limit reached of 5 min.\nPress /start to create again.`")
-        return
+        return await bot.sleep(msg)
     if await is_cancel(msg, otp.text):
-        return
+        return await bot.sleep(msg)
     otp_code = otp.text
     await otp.delete()
     try:
         await client.sign_in(phone, code.phone_code_hash, phone_code=' '.join(str(otp_code)))
     except PhoneCodeInvalid:
         await msg.reply("`Invalid Code.`\n\nPress /start to create again.")
-        return
+        return await bot.sleep(msg)
     except PhoneCodeExpired:
         await msg.reply("`Code is Expired.`\n\nPress /start to create again.")
-        return
+        return await bot.sleep(msg)
     except SessionPasswordNeeded:
         try:
             two_step_code = await bot.ask(
@@ -122,7 +117,7 @@ async def genStr(bot: Bot, msg: Message):
             )
         except TimeoutError:
             await msg.reply("`Time limit reached of 5 min.\n\nPress /start to create again.`")
-            return
+            return await bot.sleep(msg)
         if await is_cancel(msg, two_step_code.text):
             return
         new_code = two_step_code.text
@@ -131,10 +126,10 @@ async def genStr(bot: Bot, msg: Message):
             await client.check_password(new_code)
         except Exception as e:
             await msg.reply(f"**ERROR:** `{str(e)}`")
-            return
+            return await bot.sleep(msg)
     except Exception as e:
         await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`")
-        return
+        return await bot.sleep(msg)
     try:
         session_string = await client.export_session_string()
         await client.send_message("me", f"#PYROGRAM #HU_STRING_SESSION\n\n```{session_string}```")
@@ -144,9 +139,10 @@ async def genStr(bot: Bot, msg: Message):
             [[InlineKeyboardButton(text="Click Me", url=f"tg://openmessage?user_id={chat.id}")]]
         )
         await bot.send_message(chat.id, text, reply_markup=reply_markup)
+        return await bot.sleep(msg)
     except Exception as e:
         await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`")
-        return
+        return await bot.sleep(msg)
 
 
 @bot.on_message(filters.private & filters.command("restart"))
@@ -158,8 +154,6 @@ async def restart(bot: Bot, msg: Message):
 
 @bot.on_message(filters.private & filters.command("help"))
 async def start(_, msg: Message):
-    if msg.from_user.id in bot.spammers:
-        return
     out = f"""
 Hello {msg.from_user.mention}, this is Pyrogram Session String Generator Bot \
 which gives you `HU_STRING_SESSION` for your UserBot.

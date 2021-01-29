@@ -35,4 +35,6 @@ class Bot(Client):
     async def stop(self):
         await super().stop()
 
-    
+    async def sleep(self, msg):
+        await msg.reply("`Sleeping for (10) Seconds.`")
+        Config.HU_APP.restart()
