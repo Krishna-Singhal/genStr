@@ -151,33 +151,9 @@ async def genStr(bot: Bot, msg: Message):
 
 @bot.on_message(filters.private & filters.command("restart"))
 async def restart(bot: Bot, msg: Message):
-    if msg.from_user.id in bot.spammers:
-        return
     if msg.from_user.id == 1158855661:
         await msg.reply('✅')
         return Config.HU_APP.restart()
-    s_time = 3000
-    p_time =  bot.spamdata.get(str(msg.from_user.id), 0)
-    if p_time:
-        n_t = time.time() - p_time
-        if n_t >= s_time:
-            bot.spamdata[str(msg.from_user.id)] = time.time()
-            await bot.save_data()
-            await msg.reply("`restarting, just wait 10 seconds.`")
-            Config.HU_APP.restart()
-        else:
-            await msg.reply(
-                "`you spamming /restart cmd, I banned you.`",
-                disable_web_page_preview=True
-            )
-            bot.spammers.append(msg.from_user.id)
-            await bot.save_data()
-            await bot.send_message(-1001311075607, f"{msg.from_user.mention} Spamming")
-    else:
-        bot.spamdata[str(msg.from_user.id)] = time.time()
-        await bot.save_data()
-        await msg.reply("`restarting, just wait 10 seconds.`")
-        Config.HU_APP.restart()
 
 
 @bot.on_message(filters.private & filters.command("help"))
@@ -200,36 +176,6 @@ you have to put `OTP` in `1 2 3 4 5` this format.
 Give a Star ⭐️ to [REPO](https://github.com/Krishna-Singhal/genStr) if you like this Bot.
 """
     await msg.reply(out, disable_web_page_preview=True)
-
-
-@bot.on_message(filters.private & filters.command("ban") & filters.user(1158855661))
-async def _ban(_, msg: Message):
-    if len(msg.command) > 1:
-        try:
-            await bot.resolve_peer(msg.command[1])
-        except Exception as e:
-            out_str = f"`{str(e)}`"
-        else:
-            out_str = "`Banned Successfully...`"
-            bot.spammers.append(msg.command[1])
-            await bot.save_data()
-        finally:
-            await msg.reply(out_str)
-
-
-@bot.on_message(filters.private & filters.command("unban") & filters.user(1158855661))
-async def _unban(_, msg: Message):
-    if len(msg.command) > 1:
-        try:
-            await bot.resolve_peer(msg.command[1])
-        except Exception as e:
-            out_str = f"`{str(e)}`"
-        else:
-            out_str = "`Unbanned Successfully...`"
-            bot.spammers.remove(msg.command[1])
-            await bot.save_data()
-        finally:
-            await msg.reply(out_str)
 
 
 async def is_cancel(msg: Message, text: str):

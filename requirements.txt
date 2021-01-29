@@ -1,4 +1,5 @@
 heroku3
+pymongo
 pyrogram
 pyromod
 TgCrypto
