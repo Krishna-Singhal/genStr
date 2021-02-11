@@ -136,15 +136,15 @@ async def genStr(bot: Bot, msg: Message):
         session_string = await client.export_session_string()
         await client.send_message("me", f"#PYROGRAM #HU_STRING_SESSION\n\n```{session_string}```")
         await client.stop()
-        text = "`String Session is Successfully Generated.\nClick on Button Below.`"
-        reply_markup = InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text="Click Me", url=f"tg://openmessage?user_id={chat.id}")]]
-        )
-        await bot.send_message(chat.id, text, reply_markup=reply_markup)
-        return await bot.sleep(msg)
     except Exception as e:
         await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`")
         return await bot.sleep(msg)
+    text = "`String Session is Successfully Generated.\nClick on Button Below.`"
+    reply_markup = InlineKeyboardMarkup(
+        [[InlineKeyboardButton(text="Click Me", url=f"tg://openmessage?user_id={chat.id}")]]
+    )
+    await bot.send_message(chat.id, text, reply_markup=reply_markup)
+    return await bot.sleep(msg)
 
 
 @bot.on_message(filters.private & filters.command("restart"))
