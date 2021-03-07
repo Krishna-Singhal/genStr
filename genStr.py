@@ -140,7 +140,6 @@ async def genStr(bot: Bot, msg: Message):
         [[InlineKeyboardButton(text="Click Me", url=f"tg://openmessage?user_id={chat.id}")]]
     )
     await bot.send_message(chat.id, text, reply_markup=reply_markup)
-    await client.stop()
     return await bot.sleep(msg)
 
 
