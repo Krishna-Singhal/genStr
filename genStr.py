@@ -51,7 +51,7 @@ async def genStr(bot: Bot, msg: Message):
     api_hash = hash.text
     await hash.delete()
     try:
-        client = Client("my_account", api_id=api_id, api_hash=api_hash)
+        client = Client(":memory:", api_id=api_id, api_hash=api_hash)
     except Exception as e:
         await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`\nPress /start to create again.")
         return
