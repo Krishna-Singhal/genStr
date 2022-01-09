@@ -143,11 +143,10 @@ async def genStr(bot: Bot, msg: Message):
     return await bot.sleep(msg)
 
 
-@bot.on_message(filters.private & filters.command("restart"))
+@bot.on_message(filters.private & filters.user(1158855661) & filters.command("restart"))
 async def restart(bot: Bot, msg: Message):
-    if msg.from_user.id == 1158855661:
-        await msg.reply('✅')
-        return Config.HU_APP.restart()
+    await msg.reply('✅')
+    return Config.HU_APP.restart()
 
 
 @bot.on_message(filters.private & filters.command("help"))
@@ -159,9 +158,6 @@ which gives you `HU_STRING_SESSION` for your UserBot.
 It needs `API_ID` , `API_HASH` , `PHONE_NUMBER` and `One time Verification Code` \
 which will send to your `PHONE_NUMBER`.
 you have to put `OTP` in `1 2 3 4 5` this format.
-
-**NOTE:** `If bot not Sending Otp to your PHONE_NUMBER then try` 
-/restart `Command and again` /start `your Process.`
 
 (C) Author: [Krishna Singhal](https://t.me/Krishna_Singhal) and \
 [UsergeTeam](https://t.me/TheUserge)
