@@ -1,0 +1,11 @@
+{
+  "name": "genStr",
+  "description": "Generate string session using this bot",
+  "env": {
+    "BOT_TOKEN": {"description": "Get this from https://t.me/BotFather"},
+    "API_KEY": {"description": "Heroku API Key from https://dashboard.heroku.com/account"},
+    "APP_NAME": {
+      "description": "Enter name of your Heroku app",
+      "required": false}
+  }
+}
