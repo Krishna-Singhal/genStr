@@ -18,7 +18,7 @@ from pyrogram.errors import (
 bot = Bot()
 
 API_TEXT = """Hi {}
-Welcome to Pyrogram's `HU_STRING_SESSION` generator Bot.
+Welcome to Pyrogram's SESSION_STRING` generator Bot.
 
 `Send your API_ID to Continue.`"""
 HASH_TEXT = "`Send your API_HASH to Continue.`\n\nPress /cancel to Cancel."
@@ -133,7 +133,7 @@ async def genStr(bot: Bot, msg: Message):
         await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`")
         return await bot.sleep(msg)
     session_string = await client.export_session_string()
-    await client.send_message("me", f"#PYROGRAM #HU_STRING_SESSION\n\n```{session_string}```")
+    await client.send_message("me", f"#PYROGRAM #SESSION_STRING\n\n```{session_string}```")
 
     text = "`String Session is Successfully Generated.\nClick on Button Below.`"
     reply_markup = InlineKeyboardMarkup(
@@ -153,7 +153,7 @@ async def restart(bot: Bot, msg: Message):
 async def start(_, msg: Message):
     out = f"""
 Hello {msg.from_user.mention}, this is Pyrogram Session String Generator Bot \
-which gives you `HU_STRING_SESSION` for your UserBot.
+which gives you `SESSION_STRING` for your UserBot.
 
 It needs `API_ID` , `API_HASH` , `PHONE_NUMBER` and `One time Verification Code` \
 which will send to your `PHONE_NUMBER`.
