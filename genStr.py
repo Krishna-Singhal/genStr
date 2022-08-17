@@ -1,6 +1,3 @@
-import os
-import json
-import time
 import asyncio
 
 from bot import Bot, Config
@@ -81,7 +78,7 @@ async def genStr(bot: Bot, msg: Message):
         code = await client.send_code(phone)
         await asyncio.sleep(1)
     except FloodWait as e:
-        await msg.reply(f"`you have floodwait of {e.x} Seconds`")
+        await msg.reply(f"`you have floodwait of {e.value} Seconds`")
         return await bot.sleep(msg)
     except ApiIdInvalid:
         await msg.reply("`Api Id and Api Hash are Invalid.`\n\nPress /start to create again.")

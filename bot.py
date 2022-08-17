@@ -1,14 +1,8 @@
 import os
-import asyncio
-import json
-from typing import Dict, Optional, List
 
 from heroku3 import from_key
 from pyrogram import Client
 from pyromod import listen
-
-from pyrogram.errors import MessageNotModified
-
 
 class Config:
     API_ID = int(os.environ.get("API_ID", 0))
@@ -24,7 +18,7 @@ class Bot(Client):
         kwargs = {
             'api_id': Config.API_ID,
             'api_hash': Config.API_HASH,
-            'session_name': ':memory:',
+            'name': ':memory:',
             'bot_token': Config.BOT_TOKEN
         }
         super().__init__(**kwargs)
