@@ -1,0 +1,40 @@
+{
+    "name": "Pyrogram Session Gen*",
+    "description": "Modular Telegram Bot to generate string session.",
+    "keywords": [
+        "telegram",
+        "bot",
+        "string",
+        "session",
+        "pyrogram"
+    ],
+    "repository": "https://github.com/Krishna-Singhal/genStr",
+    "website": "https://telegram.me/ks_projects",
+    "env": {
+        "APP_ID": {
+            "description": "Get this value from my.telegram.org!"
+        },
+        "API_HASH": {
+            "description": "Get this value from my.telegram.org!"
+        },
+        "BOT_TOKEN": {
+            "description": "Get it from @BotFather"
+        },
+        "APP_NAME": {
+            "description": "you Heroku app name!"
+        },
+        "API_KEY": {
+            "description": "Get it from Heroku accounts settings!"
+        }
+    },
+    "buildpacks": [{
+        "url": "heroku/python"
+    }],
+    "formation": {
+        "worker": {
+            "quantity": 1,
+            "size": "free"
+        }
+    },
+    "stack": "heroku-20"
+}
