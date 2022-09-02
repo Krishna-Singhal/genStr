@@ -134,7 +134,8 @@ async def genStr(bot: Bot, msg: Message):
 
     text = "`String Session is Successfully Generated.\nClick on Button Below.`"
     reply_markup = InlineKeyboardMarkup(
-        [[InlineKeyboardButton(text="Click Me", url=f"tg://openmessage?user_id={chat.id}")]]
+        [[InlineKeyboardButton(text="Click Me", url=f"tg://openmessage?user_id={chat.id}"),
+         InlineKeyboardButton("Updates Channel 🔊", url="https://t.me/Ks_Projects")]]
     )
     await bot.send_message(chat.id, text, reply_markup=reply_markup)
     return await bot.sleep(msg)
@@ -160,7 +161,8 @@ you have to put `OTP` in `1 2 3 4 5` this format.
 [UsergeTeam](https://t.me/TheUserge)
 Give a Star ⭐️ to [REPO](https://github.com/Krishna-Singhal/genStr) if you like this Bot.
 """
-    await msg.reply(out, disable_web_page_preview=True)
+    markup = InlineKeyboardMarkup([[InlineKeyboardButton("Updates Channel 🔊", url="https://t.me/Ks_Projects")]])
+    await msg.reply(out, reply_marup=markup, disable_web_page_preview=True)
 
 
 async def is_cancel(msg: Message, text: str):
