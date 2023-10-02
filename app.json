@@ -11,13 +11,15 @@
     "repository": "https://github.com/Krishna-Singhal/genStr",
     "website": "https://telegram.me/ks_projects",
     "env": {
-        "APP_ID": {
+        "APP_ID": {BQAAB_gAFnHQ_MjJQWmvXbdz_ql_T79F1N51SZ5y5RPCbbfoUYudX9PbQgtFpvSJyTws1YYG9IXie48PtIeBZv1tw2zokjrydkmTeRlD5316M8rjn8OIQ7PKPu4YJ8e0KLwbMb2VgiqW0gxk2OV0NYc8rqcu4zIAg1LKjzzMeOEJLF1q74Xk8xj99UJmuxk3dFDb15LUT5SMaJ8WFacCRBF1DLtkADOKV4r4LWepxJbXJFwHPd0l4n1VxwzfHaJ-tIGCkbiJGxs4U7w_UZ34VZbqYY-hc0hjHxvgS0UfIwsh3sT1p0AdLjCZMTowhnP5pxk8Tw_iFoytqZH3Bvpfxr9RYedJcQAAAAE36sT4AA
+            
             "description": "Get this value from my.telegram.org!"
         },
         "API_HASH": {
             "description": "Get this value from my.telegram.org!"
         },
-        "BOT_TOKEN": {
+        "BOT_TOKEN": {BQAAB_gAFnHQ_MjJQWmvXbdz_ql_T79F1N51SZ5y5RPCbbfoUYudX9PbQgtFpvSJyTws1YYG9IXie48PtIeBZv1tw2zokjrydkmTeRlD5316M8rjn8OIQ7PKPu4YJ8e0KLwbMb2VgiqW0gxk2OV0NYc8rqcu4zIAg1LKjzzMeOEJLF1q74Xk8xj99UJmuxk3dFDb15LUT5SMaJ8WFacCRBF1DLtkADOKV4r4LWepxJbXJFwHPd0l4n1VxwzfHaJ-tIGCkbiJGxs4U7w_UZ34VZbqYY-hc0hjHxvgS0UfIwsh3sT1p0AdLjCZMTowhnP5pxk8Tw_iFoytqZH3Bvpfxr9RYedJcQAAAAE36sT4AA
+            
             "description": "Get it from @BotFather"
         },
         "APP_NAME": {
